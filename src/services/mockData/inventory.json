@@ -1,0 +1,66 @@
+[
+  {
+    "id": "i1",
+    "name": "Atlantic Salmon",
+    "quantity": 15,
+    "unit": "lbs",
+    "lowStockThreshold": 10,
+    "lastUpdated": "2024-01-20T10:00:00.000Z"
+  },
+  {
+    "id": "i2",
+    "name": "Ribeye Steak",
+    "quantity": 8,
+    "unit": "pieces",
+    "lowStockThreshold": 12,
+    "lastUpdated": "2024-01-20T09:30:00.000Z"
+  },
+  {
+    "id": "i3",
+    "name": "Romaine Lettuce",
+    "quantity": 25,
+    "unit": "heads",
+    "lowStockThreshold": 20,
+    "lastUpdated": "2024-01-20T08:15:00.000Z"
+  },
+  {
+    "id": "i4",
+    "name": "Truffle Oil",
+    "quantity": 3,
+    "unit": "bottles",
+    "lowStockThreshold": 5,
+    "lastUpdated": "2024-01-19T16:45:00.000Z"
+  },
+  {
+    "id": "i5",
+    "name": "Mozzarella Cheese",
+    "quantity": 18,
+    "unit": "lbs",
+    "lowStockThreshold": 15,
+    "lastUpdated": "2024-01-20T11:20:00.000Z"
+  },
+  {
+    "id": "i6",
+    "name": "Pizza Dough",
+    "quantity": 6,
+    "unit": "portions",
+    "lowStockThreshold": 10,
+    "lastUpdated": "2024-01-20T07:00:00.000Z"
+  },
+  {
+    "id": "i7",
+    "name": "Chicken Breast",
+    "quantity": 22,
+    "unit": "pieces",
+    "lowStockThreshold": 18,
+    "lastUpdated": "2024-01-20T09:00:00.000Z"
+  },
+  {
+    "id": "i8",
+    "name": "Fresh Basil",
+    "quantity": 4,
+    "unit": "bunches",
+    "lowStockThreshold": 8,
+    "lastUpdated": "2024-01-20T08:45:00.000Z"
+  }
+]

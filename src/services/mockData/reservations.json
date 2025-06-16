@@ -1,0 +1,42 @@
+[
+  {
+    "id": "r1",
+    "customerName": "Sarah Johnson",
+    "phone": "(555) 123-4567",
+    "dateTime": "2024-01-20T19:00:00.000Z",
+    "partySize": 4,
+    "notes": "Anniversary dinner, quiet table preferred"
+  },
+  {
+    "id": "r2",
+    "customerName": "Mike Chen",
+    "phone": "(555) 234-5678",
+    "dateTime": "2024-01-20T20:30:00.000Z",
+    "partySize": 2,
+    "notes": "Business meeting"
+  },
+  {
+    "id": "r3",
+    "customerName": "Emily Rodriguez",
+    "phone": "(555) 345-6789",
+    "dateTime": "2024-01-21T18:30:00.000Z",
+    "partySize": 6,
+    "notes": "Birthday celebration, will need high chair"
+  },
+  {
+    "id": "r4",
+    "customerName": "David Thompson",
+    "phone": "(555) 456-7890",
+    "dateTime": "2024-01-21T19:15:00.000Z",
+    "partySize": 3,
+    "notes": "Food allergies - no nuts"
+  },
+  {
+    "id": "r5",
+    "customerName": "Lisa Anderson",
+    "phone": "(555) 567-8901",
+    "dateTime": "2024-01-22T17:45:00.000Z",
+    "partySize": 8,
+    "notes": "Company dinner, separate checks needed"
+  }
+]

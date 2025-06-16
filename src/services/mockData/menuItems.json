@@ -1,0 +1,82 @@
+[
+  {
+    "id": "m1",
+    "name": "Grilled Salmon",
+    "price": 28.99,
+    "category": "Main Course",
+    "available": true,
+    "description": "Fresh Atlantic salmon grilled to perfection with lemon herb butter"
+  },
+  {
+    "id": "m2",
+    "name": "Caesar Salad",
+    "price": 14.99,
+    "category": "Salads",
+    "available": true,
+    "description": "Crisp romaine lettuce with parmesan, croutons, and classic Caesar dressing"
+  },
+  {
+    "id": "m3",
+    "name": "House Wine",
+    "price": 12.99,
+    "category": "Beverages",
+    "available": true,
+    "description": "Our signature red wine blend"
+  },
+  {
+    "id": "m4",
+    "name": "Ribeye Steak",
+    "price": 42.99,
+    "category": "Main Course",
+    "available": true,
+    "description": "Premium 12oz ribeye steak cooked to your preference"
+  },
+  {
+    "id": "m5",
+    "name": "Truffle Fries",
+    "price": 18.99,
+    "category": "Appetizers",
+    "available": true,
+    "description": "Hand-cut fries with truffle oil and parmesan"
+  },
+  {
+    "id": "m6",
+    "name": "Craft Beer",
+    "price": 8.99,
+    "category": "Beverages",
+    "available": true,
+    "description": "Local IPA on tap"
+  },
+  {
+    "id": "m7",
+    "name": "Margherita Pizza",
+    "price": 22.99,
+    "category": "Pizza",
+    "available": false,
+    "description": "Wood-fired pizza with fresh mozzarella, basil, and tomato sauce"
+  },
+  {
+    "id": "m8",
+    "name": "Garlic Breadsticks",
+    "price": 8.99,
+    "category": "Appetizers",
+    "available": true,
+    "description": "Freshly baked breadsticks with garlic butter and herbs"
+  },
+  {
+    "id": "m9",
+    "name": "Soft Drink",
+    "price": 3.99,
+    "category": "Beverages",
+    "available": true,
+    "description": "Choice of Coke, Pepsi, Sprite, or Orange"
+  },
+  {
+    "id": "m10",
+    "name": "Chicken Parmesan",
+    "price": 26.99,
+    "category": "Main Course",
+    "available": true,
+    "description": "Breaded chicken breast with marinara sauce and melted mozzarella"
+  }
+]

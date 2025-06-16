@@ -1,0 +1,141 @@
+[
+  {
+    "id": "1",
+    "orderNumber": "ORD-001234",
+    "tableNumber": 5,
+    "items": [
+      {
+        "id": "m1",
+        "name": "Grilled Salmon",
+        "price": 28.99,
+        "quantity": 1
+      },
+      {
+        "id": "m2",
+        "name": "Caesar Salad",
+        "price": 14.99,
+        "quantity": 2
+      },
+      {
+        "id": "m3",
+        "name": "House Wine",
+        "price": 12.99,
+        "quantity": 1
+      }
+    ],
+    "status": "pending",
+    "totalAmount": 71.96,
+    "createdAt": "1/20/2024 6:30:00 PM.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "2",
+    "orderNumber": "ORD-001235",
+    "tableNumber": 12,
+    "items": [
+      {
+        "id": "m4",
+        "name": "Ribeye Steak",
+        "price": 42.99,
+        "quantity": 1
+      },
+      {
+        "id": "m5",
+        "name": "Truffle Fries",
+        "price": 18.99,
+        "quantity": 1
+      },
+      {
+        "id": "m6",
+        "name": "Craft Beer",
+        "price": 8.99,
+        "quantity": 2
+      }
+    ],
+    "status": "preparing",
+    "totalAmount": 79.96,
+    "createdAt": "2024-01-20T19:15:00.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "3",
+    "orderNumber": "ORD-001236",
+    "tableNumber": 3,
+    "items": [
+      {
+        "id": "m7",
+        "name": "Margherita Pizza",
+        "price": 22.99,
+        "quantity": 1
+      },
+      {
+        "id": "m8",
+        "name": "Garlic Breadsticks",
+        "price": 8.99,
+        "quantity": 1
+      },
+      {
+        "id": "m9",
+        "name": "Soft Drink",
+        "price": 3.99,
+        "quantity": 2
+      }
+    ],
+    "status": "completed",
+    "totalAmount": 39.96,
+    "createdAt": "2024-01-20T17:45:00.000Z",
+    "completedAt": "2024-01-20T18:30:00.000Z"
+  },
+  {
+    "id": "4",
+    "orderNumber": "ORD-001237",
+    "tableNumber": 8,
+    "items": [
+      {
+        "id": "m10",
+        "name": "Chicken Parmesan",
+        "price": 26.99,
+        "quantity": 1
+      },
+      {
+        "id": "m11",
+        "name": "Caprese Salad",
+        "price": 16.99,
+        "quantity": 1
+      }
+    ],
+    "status": "pending",
+    "totalAmount": 43.98,
+    "createdAt": "2024-01-20T19:45:00.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "5",
+    "orderNumber": "ORD-001238",
+    "tableNumber": 15,
+    "items": [
+      {
+        "id": "m12",
+        "name": "Seafood Pasta",
+        "price": 32.99,
+        "quantity": 1
+      },
+      {
+        "id": "m13",
+        "name": "Tiramisu",
+        "price": 9.99,
+        "quantity": 2
+      },
+      {
+        "id": "m14",
+        "name": "Espresso",
+        "price": 4.99,
+        "quantity": 2
+      }
+    ],
+    "status": "preparing",
+    "totalAmount": 61.95,
+    "createdAt": "1/20/2024 8:00:00 PMZ",
+    "completedAt": null
+  }
+]
