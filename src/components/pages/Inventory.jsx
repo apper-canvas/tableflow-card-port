@@ -325,9 +325,10 @@ return (
         {/* Inventory Modal */}
         <InventoryModal
             item={selectedItem}
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
+onClose={() => setShowModal(false)}
             onSave={handleSaveItem} />
     </div>
   );
+};
+
 export default Inventory;
