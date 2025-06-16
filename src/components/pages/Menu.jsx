@@ -16,6 +16,7 @@ const Menu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = ['all', 'Appetizers', 'Main Course', 'Pizza', 'Salads', 'Beverages'];
 
@@ -81,6 +82,20 @@ const Menu = () => {
     } catch (err) {
       toast.error('Failed to update item availability');
     }
+};
+
+  const handleAddMenuItem = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleMenuItemCreated = (newItem) => {
+    setMenuItems(prev => [...prev, newItem]);
+    setIsModalOpen(false);
+    toast.success('Menu item added successfully');
   };
 
   const getCategoryCount = (category) => {
@@ -100,7 +115,7 @@ const Menu = () => {
           <h1 className="text-2xl font-bold font-heading text-gray-900">Menu Management</h1>
           <p className="text-gray-600 mt-1">Manage menu items, prices, and availability</p>
         </div>
-        <Button icon="Plus" variant="primary">
+<Button icon="Plus" variant="primary" onClick={handleAddMenuItem}>
           Add Menu Item
         </Button>
       </div>
@@ -249,7 +264,226 @@ const Menu = () => {
             ))}
           </motion.div>
         )}
-      </div>
+</div>
+
+      {/* Add Menu Item Modal */}
+      <MenuItemModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onItemCreated={handleMenuItemCreated}
+        categories={categories.filter(cat => cat !== 'all')}
+      />
+    </div>
+  );
+};
+
+// Menu Item Modal Component
+const MenuItemModal = ({ isOpen, onClose, onItemCreated, categories }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    category: 'Appetizers',
+    price: '',
+    available: true
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required';
+    }
+    
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      newErrors.price = 'Valid price is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      const newItem = await menuItemService.create({
+        ...formData,
+        price: parseFloat(formData.price)
+      });
+      onItemCreated(newItem);
+      
+      // Reset form
+      setFormData({
+        name: '',
+        description: '',
+        category: 'Appetizers',
+        price: '',
+        available: true
+      });
+      setErrors({});
+    } catch (error) {
+      toast.error('Failed to create menu item');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setFormData({
+      name: '',
+      description: '',
+      category: 'Appetizers',
+      price: '',
+      available: true
+    });
+    setErrors({});
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-900">Add Menu Item</h2>
+          <button
+            onClick={handleClose}
+            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <ApperIcon name="X" className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <input
+              type="text"
+              placeholder="Item Name"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                errors.name ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
+              }`}
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-error flex items-center">
+                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                {errors.name}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <textarea
+              placeholder="Description"
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              rows={3}
+              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${
+                errors.description ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
+              }`}
+            />
+            {errors.description && (
+              <p className="mt-1 text-sm text-error flex items-center">
+                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                {errors.description}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <select
+              value={formData.category}
+              onChange={(e) => handleInputChange('category', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            >
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <input
+              type="number"
+              placeholder="Price"
+              value={formData.price}
+              onChange={(e) => handleInputChange('price', e.target.value)}
+              step="0.01"
+              min="0"
+              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                errors.price ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
+              }`}
+            />
+            {errors.price && (
+              <p className="mt-1 text-sm text-error flex items-center">
+                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                {errors.price}
+              </p>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              id="available"
+              checked={formData.available}
+              onChange={(e) => handleInputChange('available', e.target.checked)}
+              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+            />
+            <label htmlFor="available" className="text-sm text-gray-700">
+              Available for ordering
+            </label>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              loading={isSubmitting}
+              icon="Plus"
+            >
+              Add Item
+            </Button>
+          </div>
+        </form>
+      </motion.div>
     </div>
   );
 };
