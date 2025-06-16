@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import { toast } from 'react-toastify';
-import MetricCard from '@/components/molecules/MetricCard';
-import SkeletonCard from '@/components/molecules/SkeletonCard';
-import EmptyState from '@/components/organisms/EmptyState';
-import ErrorState from '@/components/organisms/ErrorState';
-import ApperIcon from '@/components/ApperIcon';
-import { orderService, reservationService, inventoryService } from '@/services';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import MetricCard from "@/components/molecules/MetricCard";
+import SkeletonCard from "@/components/molecules/SkeletonCard";
+import EmptyState from "@/components/organisms/EmptyState";
+import ErrorState from "@/components/organisms/ErrorState";
+import ApperIcon from "@/components/ApperIcon";
+import { inventoryService, orderService, reservationService } from "@/services";
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -29,22 +29,22 @@ const Dashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const [orders, reservations, inventory] = await Promise.all([
+const [orders, reservations, inventory] = await Promise.all([
         orderService.getAll(),
         reservationService.getTodaysReservations(),
         inventoryService.getLowStockItems()
       ]);
 
       // Calculate metrics
-      const todaysOrders = orders.filter(order => {
-        const orderDate = new Date(order.createdAt).toDateString();
+const todaysOrders = orders.filter(order => {
+        const orderDate = new Date(order.CreatedOn || order.createdAt).toDateString();
         const today = new Date().toDateString();
         return orderDate === today;
       });
 
-      const todaysRevenue = todaysOrders
+const todaysRevenue = todaysOrders
         .filter(order => order.status === 'completed')
-        .reduce((sum, order) => sum + order.totalAmount, 0);
+        .reduce((sum, order) => sum + (order.total_amount || order.totalAmount || 0), 0);
 
       const activeOrders = orders.filter(order => 
         order.status === 'pending' || order.status === 'preparing'
@@ -58,8 +58,8 @@ const Dashboard = () => {
       });
 
       // Set recent orders (last 5)
-      const sortedOrders = [...orders]
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+const sortedOrders = [...orders]
+        .sort((a, b) => new Date(b.CreatedOn || b.createdAt) - new Date(a.CreatedOn || a.createdAt))
         .slice(0, 5);
       setRecentOrders(sortedOrders);
 
@@ -260,17 +260,17 @@ const formatTime = (dateString) => {
                     animate={{ opacity: 1, x: 0 }}
                     className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
                   >
-                    <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                         <ApperIcon name="ShoppingBag" className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">{order.orderNumber}</p>
-                        <p className="text-sm text-gray-600">Table {order.tableNumber} • {formatTime(order.createdAt)}</p>
+                        <p className="font-medium text-gray-900">{order.order_number || order.orderNumber}</p>
+                        <p className="text-sm text-gray-600">Table {order.table_number || order.tableNumber} • {formatTime(order.CreatedOn || order.createdAt)}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-gray-900">${order.totalAmount.toFixed(2)}</p>
+                      <p className="font-medium text-gray-900">${(order.total_amount || order.totalAmount || 0).toFixed(2)}</p>
                       <p className={`text-sm ${getStatusColor(order.status)}`}>
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </p>
@@ -326,10 +326,10 @@ const formatTime = (dateString) => {
                       <div className="w-10 h-10 bg-info/10 rounded-lg flex items-center justify-center">
                         <ApperIcon name="Users" className="w-5 h-5 text-info" />
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{reservation.customerName}</p>
+<div>
+                        <p className="font-medium text-gray-900">{reservation.customer_name || reservation.customerName}</p>
                         <p className="text-sm text-gray-600">
-                          {formatTime(reservation.dateTime)} • {reservation.partySize} people
+                          {formatTime(reservation.date_time || reservation.dateTime)} • {reservation.party_size || reservation.partySize} people
                         </p>
                       </div>
                     </div>

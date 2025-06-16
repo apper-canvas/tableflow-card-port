@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import Button from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
-import SearchBar from '@/components/molecules/SearchBar';
-import EmptyState from '@/components/organisms/EmptyState';
-import ErrorState from '@/components/organisms/ErrorState';
-import ApperIcon from '@/components/ApperIcon';
-import { menuItemService } from '@/services';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import SearchBar from "@/components/molecules/SearchBar";
+import EmptyState from "@/components/organisms/EmptyState";
+import ErrorState from "@/components/organisms/ErrorState";
+import ApperIcon from "@/components/ApperIcon";
+import { menuItemService } from "@/services";
 
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -52,19 +52,19 @@ const Menu = () => {
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase())
+filtered = filtered.filter(item =>
+        (item.Name || item.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.category || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Sort by category and name
-    filtered.sort((a, b) => {
-      if (a.category === b.category) {
-        return a.name.localeCompare(b.name);
+filtered.sort((a, b) => {
+      if ((a.category || '') === (b.category || '')) {
+        return (a.Name || a.name || '').localeCompare(b.Name || b.name || '');
       }
-      return a.category.localeCompare(b.category);
+      return (a.category || '').localeCompare(b.category || '');
     });
 
     setFilteredItems(filtered);
@@ -109,171 +109,146 @@ const Menu = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    {/* Header */}
+    <div
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-heading text-gray-900">Menu Management</h1>
-          <p className="text-gray-600 mt-1">Manage menu items, prices, and availability</p>
+            <h1 className="text-2xl font-bold font-heading text-gray-900">Menu Management</h1>
+            <p className="text-gray-600 mt-1">Manage menu items, prices, and availability</p>
         </div>
-<Button icon="Plus" variant="primary" onClick={handleAddMenuItem}>
-          Add Menu Item
-        </Button>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <Button icon="Plus" variant="primary" onClick={handleAddMenuItem}>Add Menu Item
+                    </Button>
+    </div>
+    {/* Filters */}
+    <div
+        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                selectedCategory === category
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {category === 'all' ? 'All Items' : category}
-              <span className="ml-2 text-xs opacity-75">
-                ({getCategoryCount(category)})
-              </span>
-            </button>
-          ))}
+            {categories.map(category => <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedCategory === category ? "bg-primary text-white shadow-sm" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+                {category === "all" ? "All Items" : category}
+                <span className="ml-2 text-xs opacity-75">({getCategoryCount(category)})
+                                  </span>
+            </button>)}
         </div>
-        
         <SearchBar
-          onSearch={setSearchTerm}
-          placeholder="Search menu items..."
-          className="w-full lg:w-80"
-        />
-      </div>
-
-      {/* Menu Items */}
-      <div className="min-h-[400px]">
-        {loading ? (
-          <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            onSearch={setSearchTerm}
+            placeholder="Search menu items..."
+            className="w-full lg:w-80" />
+    </div>
+    {/* Menu Items */}
+    <div className="min-h-[400px]">
+        {loading ? <div className="space-y-4">
+            {Array.from({
+                length: 5
+            }).map((_, index) => <div
+                key={index}
+                className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
                 <div className="animate-pulse">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="h-5 bg-gray-200 rounded w-32"></div>
-                    <div className="h-6 bg-gray-200 rounded-full w-20"></div>
-                  </div>
-                  <div className="space-y-2 mb-4">
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-200 rounded w-24"></div>
-                    <div className="h-8 bg-gray-200 rounded w-16"></div>
-                  </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="h-5 bg-gray-200 rounded w-32"></div>
+                        <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                        <div className="h-4 bg-gray-200 rounded w-full"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-8 bg-gray-200 rounded w-16"></div>
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredItems.length === 0 ? (
-          <EmptyState
+            </div>)}
+        </div> : filteredItems.length === 0 ? <EmptyState
             icon="ChefHat"
             title={searchTerm ? "No items found" : "No menu items"}
-            description={
-              searchTerm 
-                ? "Try adjusting your search terms"
-                : "Add your first menu item to get started"
-            }
-            actionLabel={!searchTerm ? "Add Menu Item" : undefined}
-          />
-        ) : (
-          <motion.div
+            description={searchTerm ? "Try adjusting your search terms" : "Add your first menu item to get started"}
+            actionLabel={!searchTerm ? "Add Menu Item" : undefined} /> : <motion.div
             className="space-y-4"
             initial="hidden"
             animate="visible"
             variants={{
-              hidden: { opacity: 0 },
-              visible: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.05
+                hidden: {
+                    opacity: 0
+                },
+
+                visible: {
+                    opacity: 1,
+
+                    transition: {
+                        staggerChildren: 0.05
+                    }
                 }
-              }
-            }}
-          >
-            {filteredItems.map((item) => (
-              <motion.div
+            }}>
+            {filteredItems.map(item => <motion.div
                 key={item.id}
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                whileHover={{ scale: 1.01, y: -2 }}
-                className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md hover:border-primary/30 transition-all duration-200"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-                      <Badge variant={item.category === 'Main Course' ? 'primary' : 'default'} size="sm">
-                        {item.category}
-                      </Badge>
-                      <Badge 
-                        variant={item.available ? 'success' : 'error'} 
-                        size="sm"
-                      >
-                        {item.available ? 'Available' : 'Unavailable'}
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-                      {item.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <span className="text-xl font-bold text-primary">
-                          ${item.price.toFixed(2)}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => toggleAvailability(item.id, item.available)}
-                          className={`p-2 rounded-lg transition-all duration-200 ${
-                            item.available
-                              ? 'text-success hover:bg-success/10'
-                              : 'text-error hover:bg-error/10'
-                          }`}
-                          title={item.available ? 'Disable item' : 'Enable item'}
-                        >
-                          <ApperIcon 
-                            name={item.available ? 'Eye' : 'EyeOff'} 
-                            className="w-4 h-4" 
-                          />
-                        </button>
-                        
-                        <button className="p-2 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all duration-200">
-                          <ApperIcon name="Edit2" className="w-4 h-4" />
-                        </button>
-                        
-                        <button className="p-2 text-gray-400 hover:text-error hover:bg-error/10 rounded-lg transition-all duration-200">
-                          <ApperIcon name="Trash2" className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-</div>
+                    hidden: {
+                        opacity: 0,
+                        y: 20
+                    },
 
-      {/* Add Menu Item Modal */}
-      <MenuItemModal
+                    visible: {
+                        opacity: 1,
+                        y: 0
+                    }
+                }}
+                whileHover={{
+                    scale: 1.01,
+                    y: -2
+                }}
+                className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md hover:border-primary/30 transition-all duration-200">
+                <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900">{item.Name || item.name}</h3>
+                            <Badge
+                                variant={item.category === "Main Course" ? "primary" : "default"}
+                                size="sm">
+                                {item.category}
+                            </Badge>
+                            <Badge variant={item.available ? "success" : "error"} size="sm">
+                                {item.available ? "Available" : "Unavailable"}
+                            </Badge>
+                        </div>
+                        <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                            {item.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                                <span className="text-xl font-bold text-primary">${item.price.toFixed(2)}
+                                </span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <button
+                                    onClick={() => toggleAvailability(item.id, item.available)}
+                                    className={`p-2 rounded-lg transition-all duration-200 ${item.available ? "text-success hover:bg-success/10" : "text-error hover:bg-error/10"}`}
+                                    title={item.available ? "Disable item" : "Enable item"}>
+                                    <ApperIcon name={item.available ? "Eye" : "EyeOff"} className="w-4 h-4" />
+                                </button>
+                                <button
+                                    className="p-2 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all duration-200">
+                                    <ApperIcon name="Edit2" className="w-4 h-4" />
+                                </button>
+                                <button
+                                    className="p-2 text-gray-400 hover:text-error hover:bg-error/10 rounded-lg transition-all duration-200">
+                                    <ApperIcon name="Trash2" className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>)}
+        </motion.div>}
+    </div>
+    {/* Add Menu Item Modal */}
+    <MenuItemModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onItemCreated={handleMenuItemCreated}
-        categories={categories.filter(cat => cat !== 'all')}
-      />
-    </div>
+        categories={categories.filter(cat => cat !== "all")} />
+</div>
   );
 };
 
@@ -320,12 +295,17 @@ const MenuItemModal = ({ isOpen, onClose, onItemCreated, categories }) => {
     
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
+setIsSubmitting(true);
+    
     try {
       const newItem = await menuItemService.create({
-        ...formData,
-        price: parseFloat(formData.price)
+        name: formData.name,
+        description: formData.description,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        available: formData.available
       });
+      
       onItemCreated(newItem);
       
       // Reset form
@@ -359,132 +339,111 @@ const MenuItemModal = ({ isOpen, onClose, onItemCreated, categories }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+    <div
+    className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <motion.div
+        initial={{
+            opacity: 0,
+            scale: 0.95,
+            y: 20
+        }}
+        animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0
+        }}
+        exit={{
+            opacity: 0,
+            scale: 0.95,
+            y: 20
+        }}
         className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
+        onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Add Menu Item</h2>
-          <button
-            onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <ApperIcon name="X" className="w-5 h-5" />
-          </button>
+        <div
+            className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900">Add Menu Item</h2>
+            <button
+                onClick={handleClose}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                <ApperIcon name="X" className="w-5 h-5" />
+            </button>
         </div>
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <input
-              type="text"
-              placeholder="Item Name"
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                errors.name ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-error flex items-center">
-                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
-                {errors.name}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <textarea
-              placeholder="Description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              rows={3}
-              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${
-                errors.description ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
-              }`}
-            />
-            {errors.description && (
-              <p className="mt-1 text-sm text-error flex items-center">
-                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
-                {errors.description}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <select
-              value={formData.category}
-              onChange={(e) => handleInputChange('category', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <input
-              type="number"
-              placeholder="Price"
-              value={formData.price}
-              onChange={(e) => handleInputChange('price', e.target.value)}
-              step="0.01"
-              min="0"
-              className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                errors.price ? 'border-error focus:border-error' : 'border-gray-300 focus:border-primary'
-              }`}
-            />
-            {errors.price && (
-              <p className="mt-1 text-sm text-error flex items-center">
-                <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
-                {errors.price}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="available"
-              checked={formData.available}
-              onChange={(e) => handleInputChange('available', e.target.checked)}
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-            />
-            <label htmlFor="available" className="text-sm text-gray-700">
-              Available for ordering
-            </label>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              loading={isSubmitting}
-              icon="Plus"
-            >
-              Add Item
-            </Button>
-          </div>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Item Name"
+                    value={formData.name}
+                    onChange={e => handleInputChange("name", e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.name ? "border-error focus:border-error" : "border-gray-300 focus:border-primary"}`} />
+                {errors.name && <p className="mt-1 text-sm text-error flex items-center">
+                    <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                    {errors.name}
+                </p>}
+            </div>
+            <div>
+                <textarea
+                    placeholder="Description"
+                    value={formData.description}
+                    onChange={e => handleInputChange("description", e.target.value)}
+                    rows={3}
+                    className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${errors.description ? "border-error focus:border-error" : "border-gray-300 focus:border-primary"}`} />
+                {errors.description && <p className="mt-1 text-sm text-error flex items-center">
+                    <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                    {errors.description}
+                </p>}
+            </div>
+            <div>
+                <select
+                    value={formData.category}
+                    onChange={e => handleInputChange("category", e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                    {categories.map(category => <option key={category} value={category}>
+                        {category}
+                    </option>)}
+                </select>
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="Price"
+                    value={formData.price}
+                    onChange={e => handleInputChange("price", e.target.value)}
+                    step="0.01"
+                    min="0"
+                    className={`w-full px-3 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 ${errors.price ? "border-error focus:border-error" : "border-gray-300 focus:border-primary"}`} />
+                {errors.price && <p className="mt-1 text-sm text-error flex items-center">
+                    <ApperIcon name="AlertCircle" className="w-4 h-4 mr-1" />
+                    {errors.price}
+                </p>}
+            </div>
+            <div className="flex items-center space-x-3">
+                <input
+                    type="checkbox"
+                    id="available"
+                    checked={formData.available}
+                    onChange={e => handleInputChange("available", e.target.checked)}
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary" />
+                <label htmlFor="available" className="text-sm text-gray-700">Available for ordering
+                                </label>
+            </div>
+            {/* Actions */}
+            <div
+                className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleClose}
+                    disabled={isSubmitting}>Cancel
+                                </Button>
+                <Button type="submit" variant="primary" loading={isSubmitting} icon="Plus">Add Item
+                                </Button>
+            </div>
         </form>
-      </motion.div>
-    </div>
+    </motion.div>
+</div>
   );
 };
 
