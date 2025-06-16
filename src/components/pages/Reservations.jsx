@@ -18,6 +18,7 @@ const Reservations = () => {
   const [selectedDate, setSelectedDate] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const dateFilters = [
     { id: 'all', label: 'All' },
@@ -83,8 +84,23 @@ const Reservations = () => {
     filtered.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
 
     setFilteredReservations(filtered);
+};
+
+  const handleNewReservation = () => {
+    setShowModal(true);
   };
 
+  const handleReservationSubmit = async (reservationData) => {
+    try {
+      const newReservation = await reservationService.create(reservationData);
+      setReservations(prev => [...prev, newReservation]);
+      toast.success('Reservation created successfully');
+      setShowModal(false);
+    } catch (err) {
+      toast.error('Failed to create reservation');
+      throw err;
+    }
+  };
   const formatReservationDate = (dateString) => {
     const date = parseISO(dateString);
     if (isToday(date)) return 'Today';
@@ -128,8 +144,8 @@ const Reservations = () => {
           <h1 className="text-2xl font-bold font-heading text-gray-900">Reservations</h1>
           <p className="text-gray-600 mt-1">Manage customer reservations and table bookings</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button icon="Plus" variant="primary">
+<div className="flex items-center space-x-2">
+          <Button icon="Plus" variant="primary" onClick={handleNewReservation}>
             New Reservation
           </Button>
         </div>
@@ -301,8 +317,263 @@ const Reservations = () => {
             ))}
           </motion.div>
         )}
-      </div>
+</div>
+
+      {/* Reservation Modal */}
+      <ReservationModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleReservationSubmit}
+      />
     </div>
+  );
+};
+
+// Reservation Modal Component
+const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    customerName: '',
+    phone: '',
+    dateTime: '',
+    partySize: 2,
+    notes: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.customerName.trim()) {
+      newErrors.customerName = 'Customer name is required';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^\+?[\d\s\-\(\)]+$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+    
+    if (!formData.dateTime) {
+      newErrors.dateTime = 'Date and time are required';
+    } else {
+      const selectedDate = new Date(formData.dateTime);
+      const now = new Date();
+      if (selectedDate < now) {
+        newErrors.dateTime = 'Cannot book a reservation in the past';
+      }
+    }
+    
+    if (formData.partySize < 1 || formData.partySize > 20) {
+      newErrors.partySize = 'Party size must be between 1 and 20';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        ...formData,
+        partySize: parseInt(formData.partySize)
+      });
+      
+      // Reset form
+      setFormData({
+        customerName: '',
+        phone: '',
+        dateTime: '',
+        partySize: 2,
+        notes: ''
+      });
+      setErrors({});
+    } catch (err) {
+      // Error handling is done in parent component
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      setFormData({
+        customerName: '',
+        phone: '',
+        dateTime: '',
+        partySize: 2,
+        notes: ''
+      });
+      setErrors({});
+      onClose();
+    }
+  };
+
+  // Get minimum date/time (current time + 1 hour)
+  const getMinDateTime = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    return now.toISOString().slice(0, 16);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isOpen ? 1 : 0 }}
+      exit={{ opacity: 0 }}
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ${
+        isOpen ? 'pointer-events-auto' : 'pointer-events-none'
+      }`}
+      onClick={handleClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: isOpen ? 1 : 0.95, opacity: isOpen ? 1 : 0 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">New Reservation</h2>
+            <p className="text-sm text-gray-600 mt-1">Create a new table reservation</p>
+          </div>
+          <button
+            onClick={handleClose}
+            disabled={isSubmitting}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200 disabled:opacity-50"
+          >
+            <ApperIcon name="X" className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Customer Name *
+            </label>
+            <input
+              type="text"
+              value={formData.customerName}
+              onChange={(e) => handleInputChange('customerName', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                errors.customerName ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Enter customer name"
+              disabled={isSubmitting}
+            />
+            {errors.customerName && (
+              <p className="text-red-500 text-sm mt-1">{errors.customerName}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number *
+            </label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                errors.phone ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Enter phone number"
+              disabled={isSubmitting}
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Date & Time *
+            </label>
+            <input
+              type="datetime-local"
+              value={formData.dateTime}
+              onChange={(e) => handleInputChange('dateTime', e.target.value)}
+              min={getMinDateTime()}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                errors.dateTime ? 'border-red-500' : 'border-gray-300'
+              }`}
+              disabled={isSubmitting}
+            />
+            {errors.dateTime && (
+              <p className="text-red-500 text-sm mt-1">{errors.dateTime}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Party Size *
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="20"
+              value={formData.partySize}
+              onChange={(e) => handleInputChange('partySize', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                errors.partySize ? 'border-red-500' : 'border-gray-300'
+              }`}
+              disabled={isSubmitting}
+            />
+            {errors.partySize && (
+              <p className="text-red-500 text-sm mt-1">{errors.partySize}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Special Notes
+            </label>
+            <textarea
+              value={formData.notes}
+              onChange={(e) => handleInputChange('notes', e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="Any special requests or notes..."
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting}
+              icon={isSubmitting ? "Loader2" : "Check"}
+            >
+              {isSubmitting ? 'Creating...' : 'Create Reservation'}
+            </Button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
   );
 };
 
