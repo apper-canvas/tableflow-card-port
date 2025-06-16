@@ -322,10 +322,11 @@ return (
                 </div>
             </motion.div>}
         </div>
-        {/* Inventory Modal */}
+{/* Inventory Modal */}
         <InventoryModal
             item={selectedItem}
-onClose={() => setShowModal(false)}
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
             onSave={handleSaveItem} />
     </div>
   );
