@@ -14,10 +14,11 @@ import { orderService } from "@/services";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('today');
+const [activeFilter, setActiveFilter] = useState('today');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -97,21 +98,36 @@ today: orders.filter(order => {
     };
   };
 
-  const handleOrderSelect = (order) => {
+const handleOrderSelect = (order) => {
     setSelectedOrder(order);
+    setIsCreateMode(false);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateOrder = () => {
+    setSelectedOrder(null);
+    setIsCreateMode(true);
     setIsModalOpen(true);
   };
 
   const handleOrderUpdate = (updatedOrder) => {
-    setOrders(prev => prev.map(order => 
-      order.id === updatedOrder.id ? updatedOrder : order
-    ));
-    setSelectedOrder(updatedOrder);
+    if (isCreateMode) {
+      // Add new order to the list
+      setOrders(prev => [updatedOrder, ...prev]);
+      toast.success('Order created successfully');
+    } else {
+      // Update existing order
+      setOrders(prev => prev.map(order => 
+        order.Id === updatedOrder.Id ? updatedOrder : order
+      ));
+      setSelectedOrder(updatedOrder);
+    }
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
+    setIsCreateMode(false);
   };
 
   if (error) {
@@ -132,8 +148,15 @@ today: orders.filter(order => {
         <div>
             <h1 className="text-2xl font-bold font-heading text-gray-900">Orders</h1>
             <p className="text-gray-600 mt-1">Manage all restaurant orders and track their status</p>
-        </div>
-        <div className="flex items-center space-x-2">
+</div>
+        <div className="flex items-center space-x-4">
+            <button
+                onClick={handleCreateOrder}
+                className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200 font-medium"
+            >
+                <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
+                New Order
+            </button>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
                 <span>Live updates</span>
@@ -196,12 +219,13 @@ today: orders.filter(order => {
             </motion.div>)}
         </motion.div>}
     </div>
-    {/* Order Details Modal */}
+{/* Order Details Modal */}
     <OrderModal
         order={selectedOrder}
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onOrderUpdate={handleOrderUpdate} />
+        onOrderUpdate={handleOrderUpdate}
+        isCreateMode={isCreateMode} />
 </div>
   );
 };
