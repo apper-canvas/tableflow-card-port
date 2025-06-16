@@ -25,7 +25,7 @@
     ],
     "status": "pending",
     "totalAmount": 71.96,
-    "createdAt": "1/20/2024 6:30:00 PM.000Z",
+"createdAt": "2024-01-20T18:30:00.000Z",
     "completedAt": null
   },
   {
@@ -135,7 +135,7 @@
     ],
     "status": "preparing",
     "totalAmount": 61.95,
-    "createdAt": "1/20/2024 8:00:00 PMZ",
+"createdAt": "2024-01-20T20:00:00.000Z",
     "completedAt": null
   }
 ]

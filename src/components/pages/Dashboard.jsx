@@ -74,12 +74,76 @@ const Dashboard = () => {
     }
   };
 
-  const formatTime = (dateString) => {
-    return format(new Date(dateString), 'HH:mm');
+const formatTime = (dateString) => {
+    try {
+      if (!dateString) return 'N/A';
+      
+      // Try parsing as-is first
+      let date = new Date(dateString);
+      
+      // If invalid, try alternative parsing strategies
+      if (isNaN(date.getTime())) {
+        // Handle formats like "1/20/2024 6:30:00 PM.000Z" or "1/20/2024 8:00:00 PMZ"
+        const cleanedString = dateString
+          .replace(/\.000Z$/, '')  // Remove .000Z suffix
+          .replace(/Z$/, '')       // Remove trailing Z
+          .trim();
+        
+        date = new Date(cleanedString);
+        
+        // If still invalid, try without time zone indicators
+        if (isNaN(date.getTime())) {
+          const withoutTZ = cleanedString.replace(/ (AM|PM)$/, ' $1');
+          date = new Date(withoutTZ);
+        }
+      }
+      
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date string:', dateString);
+        return 'Invalid time';
+      }
+      
+      return format(date, 'HH:mm');
+    } catch (error) {
+      console.error('Error formatting time:', error, 'Input:', dateString);
+      return 'Error';
+    }
   };
 
   const formatDate = (dateString) => {
-    return format(new Date(dateString), 'MMM dd');
+    try {
+      if (!dateString) return 'N/A';
+      
+      // Try parsing as-is first
+      let date = new Date(dateString);
+      
+      // If invalid, try alternative parsing strategies
+      if (isNaN(date.getTime())) {
+        // Handle formats like "1/20/2024 6:30:00 PM.000Z" or "1/20/2024 8:00:00 PMZ"
+        const cleanedString = dateString
+          .replace(/\.000Z$/, '')  // Remove .000Z suffix
+          .replace(/Z$/, '')       // Remove trailing Z
+          .trim();
+        
+        date = new Date(cleanedString);
+        
+        // If still invalid, try without time zone indicators
+        if (isNaN(date.getTime())) {
+          const withoutTZ = cleanedString.replace(/ (AM|PM)$/, ' $1');
+          date = new Date(withoutTZ);
+        }
+      }
+      
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date string:', dateString);
+        return 'Invalid date';
+      }
+      
+      return format(date, 'MMM dd');
+    } catch (error) {
+      console.error('Error formatting date:', error, 'Input:', dateString);
+      return 'Error';
+    }
   };
 
   const getStatusColor = (status) => {
