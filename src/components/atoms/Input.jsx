@@ -30,11 +30,11 @@ const Input = ({
     ${className}
   `.trim();
 
-  const labelClasses = `
-    absolute left-3 transition-all duration-200 pointer-events-none
+const labelClasses = `
+    absolute left-3 transition-all duration-200 pointer-events-none z-10
     ${icon ? 'left-10' : 'left-3'}
     ${isFocused || hasValue || props.value
-      ? 'top-0 text-xs bg-white px-1 text-primary -translate-y-1/2'
+      ? 'top-0 text-xs bg-white px-2 text-primary -translate-y-1/2'
       : 'top-1/2 text-gray-500 -translate-y-1/2'
     }
   `.trim();
