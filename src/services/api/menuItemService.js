@@ -1,4 +1,5 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
 
 class MenuItemService {
   constructor() {
@@ -7,12 +8,8 @@ class MenuItemService {
   }
 
   initializeClient() {
-    if (typeof window !== 'undefined' && window.ApperSDK) {
-      const { ApperClient } = window.ApperSDK;
-      this.apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
+    if (typeof window !== 'undefined' && window.apperClient) {
+      this.apperClient = window.apperClient;
     }
   }
 
